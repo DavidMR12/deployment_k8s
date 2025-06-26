@@ -1,0 +1,42 @@
+---
+- name: Déploiement des manifests Kubernetes
+  hosts: master
+  become: true
+  tasks:
+    - name: Appliquer les namespaces
+      kubernetes.core.k8s:
+        state: present
+        src: /home/ubuntu/cruise/k8s/namespaces.yaml
+
+    - name: Appliquer les volumes
+      kubernetes.core.k8s:
+        state: present
+        src: /home/ubuntu/cruise/k8s/volumes.yaml
+
+    - name: Appliquer les configmaps
+      kubernetes.core.k8s:
+        state: present
+        src: /home/ubuntu/cruise/k8s/backend-configmap.yaml
+
+    - name: Appliquer les secrets
+      kubernetes.core.k8s:
+        state: present
+        src: /home/ubuntu/cruise/k8s/backend-secret.yaml
+
+    - name: Appliquer les déploiements
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ item }}"
+      loop:
+        - /home/ubuntu/cruise/k8s/db-deployment.yaml
+        - /home/ubuntu/cruise/k8s/backend-deployment.yaml
+        - /home/ubuntu/cruise/k8s/frontend-deployment.yaml
+
+    - name: Appliquer les services
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ item }}"
+      loop:
+        - /home/ubuntu/cruise/k8s/db-service.yaml
+        - /home/ubuntu/cruise/k8s/backend-service.yaml
+        - /home/ubuntu/cruise/k8s/frontend-service.yaml

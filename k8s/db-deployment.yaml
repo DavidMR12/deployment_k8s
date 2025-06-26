@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-deploy
+  namespace: cruise-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: registry.local/cruise/db
+          volumeMounts:
+            - name: db-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: db-storage
+          persistentVolumeClaim:
+            claimName: db-pvc
