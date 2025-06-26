@@ -37,9 +37,58 @@ cruise/
 └── README.md
 ```
 
-## 🔧 Prochaines étapes
+# Guide d'utilisation - Projet Cruise
 
-- Ajout des ConfigMaps & Secrets
-- Configuration du monitoring (Prometheus, Grafana)
-- Automatisation complète avec Ansible
+## 🐳 Prérequis
+
+- 3 machines Linux (VM ou physiques)
+- Ansible installé sur la machine de contrôle
+- Accès SSH configuré (clé publique)
+- Kubernetes non installé (sera pris en charge par Ansible)
+- `kubernetes.core` collection Ansible installée (`ansible-galaxy collection install kubernetes.core`)
+
+## 🚀 Étapes
+
+### 1. Déployer Docker + Kubernetes
+
+Depuis votre machine de contrôle :
+
+```bash
+ansible-playbook -i inventory.ini ansible/setup-k8s.yaml
+```
+
+### 2. Initialiser le master
+
+Connexion SSH sur la machine master :
+
+```bash
+sudo bash init-master.sh
+```
+
+Cela affichera un `kubeadm join` à copier sur les workers.
+
+### 3. Appliquer les manifests Kubernetes
+
+Depuis la machine de contrôle :
+
+```bash
+ansible-playbook -i inventory.ini ansible/deploy-manifests.yaml
+```
+
+---
+
+## 📂 Arborescence des fichiers importants
+
+```
+cruise/
+├── ansible/
+│   ├── setup-k8s.yaml
+│   └── deploy-manifests.yaml
+├── k8s/
+│   └── *.yaml
+├── docker/
+│   └── */Dockerfile
+└── init-master.sh
+```
+
 
